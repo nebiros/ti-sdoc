@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+$:.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
+
+require "optparse"
+require "tmpdir"
+require "ti-sdoc"
+
+options = {}
+optparse = OptionParser.new do |opts|
+  opts.on("-f", "--f FILE", "API data file, default: http://docs.appcelerator.com/titanium/2.0/data.js") do |f|
+    options[:file] = f
+  end
+
+  opts.on("-o", "--output OUTPUT", "SDOC file") do |d|
+    options[:output] = d
+  end
+
+  opts.on("", "--log-file LOG_FILE_PATH", "log errors into, if none #{File.expand_path("#{Dir.tmpdir}/ti_sdoc.log")}") do |n|
+    options[:log_file] = n
+  end
+
+  opts.on("-h", "--help", "display this screen") do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+  mandatory = [:file, :output]
+  missing = mandatory.select{ |param| options[param].nil? }
+  if not missing.empty?
+    puts "Missing options: #{missing.join(", ")}"
+    puts optparse
+    exit
+  end
+=begin
+  data = Ti::Sdoc.main(options)
+  puts "=> #{options[:file]} data\n"
+  data.each {|k, v| puts "#{k}: #{v}\n"}
+=end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
