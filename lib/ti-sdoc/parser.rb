@@ -1,4 +1,4 @@
-require "string"
+require "../string.rb"
 
 module Ti
   module Sdoc
